@@ -1,0 +1,79 @@
+Input in datafactory mapping:
+{
+    "source": {
+        "type": "MongoDbV2Source",
+        "batchSize": 100
+    },
+    "sink": {
+        "type": "SqlDWSink",
+        "tableOption": "autoCreate"
+    },
+    "enableStaging": false,
+    "validateDataConsistency": false,
+    "translator": {
+        "type": "TabularTranslator",
+        "mappings": [
+            {
+                "source": {
+                    "path": "$['_id']['$oid']"
+                },
+                "sink": {
+                    "name": "_id",
+                    "type": "String"
+                }
+            },
+            {
+                "source": {
+                    "type": "String",
+                    "path": "$['arr']"
+                },
+                "sink": {
+                    "name": "col1",
+                    "type": "String"
+                }
+            },
+            {
+                "source": {
+                    "type": "String",
+                    "path": "$['arr2']"
+                },
+                "sink": {
+                    "name": "col2",
+                    "type": "String"
+                }
+            }
+        ]
+    }
+}
+
+
+
+Source Json:
+[
+  {
+    "_id": {
+      "$oid": "5f69efc253f169ee12cc12df"
+    },
+    "arr": [
+      {
+        "item": "item1"
+      },
+      {
+        "item": "item2"
+      }
+    ],
+    "arr2": [
+      "val1",
+      "val2",
+      "val3",
+      "val4"
+    ]
+  }
+]
+
+
+expected output:
+_id			     arr					arr1
+'5f69efc253f169ee12cc12df'     '[{"item": "item1"},{"item": "item2"}]'	'["val1","val2","val3","val4"]'
+
+the datatype should not be JSON but string
